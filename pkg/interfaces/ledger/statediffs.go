@@ -7,9 +7,9 @@ import (
 
 // StateDiffs is a submodule that provides access to the state diffs of the ledger state.
 type StateDiffs interface {
-	// StreamCreatedOutputs streams the created outputs of the given slot index.
-	StreamCreatedOutputs(slot.Index, func(*mempool.OutputWithMetadata) error) error
+	// ForEachCreatedOutput streams the created outputs of the given slot index.
+	ForEachCreatedOutput(slot.Index, func(output *mempool.OutputWithMetadata) error) error
 
-	// StreamSpentOutputs streams the spent outputs of the given slot index.
-	StreamSpentOutputs(slot.Index, func(*mempool.OutputWithMetadata) error) error
+	// ForEachSpentOutput streams the spent outputs of the given slot index.
+	ForEachSpentOutput(slot.Index, func(output *mempool.OutputWithMetadata) error) error
 }

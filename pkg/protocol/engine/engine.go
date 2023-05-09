@@ -50,7 +50,7 @@ type Engine struct {
 	SlotGadget      slotgadget.Gadget
 	Notarization    notarization.Notarization
 	Ledger          therealledger.Ledger
-	Accounts        accounts.Weights
+	BIC             accounts.BlockIssuanceCredits
 
 	Workers      *workerpool.Group
 	errorHandler func(error)
@@ -112,7 +112,7 @@ func New(
 			e.SlotGadget = slotGadgetProvider(e)
 			e.Notarization = notarizationProvider(e)
 			e.Ledger = ledgerProvider(e)
-			e.Accounts = accountsProvider(e)
+			e.BIC = accountsProvider(e)
 
 			e.HookInitialized(lo.Batch(
 				e.Storage.Settings().TriggerInitialized,
@@ -135,7 +135,7 @@ func (e *Engine) Shutdown() {
 		e.TriggerStopped()
 
 		e.BlockRequester.Shutdown()
-		e.Accounts.Shutdown()
+		e.BIC.Shutdown()
 		e.Notarization.Shutdown()
 		e.Booker.Shutdown()
 		e.BlockDAG.Shutdown()

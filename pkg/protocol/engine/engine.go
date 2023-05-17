@@ -18,7 +18,6 @@ import (
 	"github.com/iotaledger/hive.go/runtime/workerpool"
 	"github.com/iotaledger/iota-core/pkg/model"
 	"github.com/iotaledger/iota-core/pkg/network"
-	"github.com/iotaledger/iota-core/pkg/protocol/engine/accounts"
 	"github.com/iotaledger/iota-core/pkg/protocol/engine/blockdag"
 	"github.com/iotaledger/iota-core/pkg/protocol/engine/blocks"
 	"github.com/iotaledger/iota-core/pkg/protocol/engine/booker"
@@ -50,7 +49,6 @@ type Engine struct {
 	SlotGadget      slotgadget.Gadget
 	Notarization    notarization.Notarization
 	Ledger          therealledger.Ledger
-	BIC             accounts.BlockIssuanceCredits
 
 	Workers      *workerpool.Group
 	errorHandler func(error)
@@ -84,7 +82,6 @@ func New(
 	slotGadgetProvider module.Provider[*Engine, slotgadget.Gadget],
 	notarizationProvider module.Provider[*Engine, notarization.Notarization],
 	ledgerProvider module.Provider[*Engine, therealledger.Ledger],
-	accountsProvider module.Provider[*Engine, accounts.Weights],
 
 	opts ...options.Option[Engine],
 ) (engine *Engine) {
@@ -112,7 +109,6 @@ func New(
 			e.SlotGadget = slotGadgetProvider(e)
 			e.Notarization = notarizationProvider(e)
 			e.Ledger = ledgerProvider(e)
-			e.BIC = accountsProvider(e)
 
 			e.HookInitialized(lo.Batch(
 				e.Storage.Settings().TriggerInitialized,
@@ -135,7 +131,6 @@ func (e *Engine) Shutdown() {
 		e.TriggerStopped()
 
 		e.BlockRequester.Shutdown()
-		e.BIC.Shutdown()
 		e.Notarization.Shutdown()
 		e.Booker.Shutdown()
 		e.BlockDAG.Shutdown()
